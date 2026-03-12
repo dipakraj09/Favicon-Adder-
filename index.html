@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>FaviKit — Favicon Adder</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&amp;family=JetBrains+Mono:wght@400;500&amp;display=swap" rel="stylesheet">
+
+<link rel="stylesheet" href="style.css"></head>
+<body>
+
+<!-- THEME TOGGLE -->
+<div class="theme-toggle">
+  <span class="tgl-label" id="tglLbl">🌙 Dark</span>
+  <button class="tgl-btn" onclick="toggleTheme()" title="Toggle theme">
+    <div class="tgl-thumb" id="tglThumb">🌙</div>
+  </button>
+</div>
+<div class="wrap">
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">⚡</div>
+    <div class="logo-text">Favi<span>Kit</span></div>
+  </div>
+  <p>Favicon Adder · Remover · Live Preview</p>
+</header>
+
+<div class="tabs">
+  <button class="tab active" onclick="sw('svg')">🎨 SVG Favicon</button>
+  <button class="tab" onclick="sw('image')">🖼️ Image Favicon</button>
+  <button class="tab" onclick="sw('remove')">🗑️ Remove Favicon</button>
+</div>
+
+<!-- ============ TAB 1: SVG ============ -->
+<div class="panel active" id="panel-svg">
+
+  <!-- STEP 1: UPLOAD HTML -->
+  <div class="card">
+    <div class="top-bar">
+      <div class="card-label"><div class="bar"></div>Step 1 — Upload HTML File</div>
+    </div>
+    <div class="upload-zone" id="dz1" ondragover="dg(event,'dz1')" ondragleave="dl('dz1')" ondrop="dropH(event,'dz1',1)">
+      <input type="file" id="h1" accept=".html,.htm" onchange="loadH(this,1)">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title">Drop HTML File Here</div>
+      <div class="upload-sub">ya click karke manually select karo · .html / .htm</div>
+      <div id="fn1"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: SVG CODE -->
+  <div class="card">
+    <div class="top-bar">
+      <div class="card-label"><div class="bar"></div>Step 2 — Paste SVG Code</div>
+      <div class="more-btn">
+        <div class="dot-btn" onclick="tdd('dd1')"><span></span><span></span><span></span></div>
+        <div class="dropdown" id="dd1">
+          <div class="dd-item" onclick="smpl('om')"><span class="di">🕉️</span>OM Symbol</div>
+          <div class="dd-item" onclick="smpl('star')"><span class="di">⭐</span>Gold Star</div>
+          <div class="dd-item" onclick="smpl('fire')"><span class="di">🔥</span>Fire</div>
+          <div class="dd-item" onclick="smpl('code')"><span class="di">💻</span>Code Tag</div>
+          <div class="dd-item" onclick="smpl('sun')"><span class="di">☀️</span>Sun</div>
+          <div class="dd-sep"></div>
+          <div class="dd-item" onclick="clrSVG()"><span class="di">🗑️</span>Clear</div>
+          <div class="dd-item" onclick="cpSVG()"><span class="di">📋</span>Copy SVG</div>
+        </div>
+      </div>
+    </div>
+    <textarea class="svg-editor" id="svgIn" placeholder="&lt;svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'&gt;
+  &lt;!-- apna SVG code yahan paste karo --&gt;
+&lt;/svg&gt;" oninput="upSVG()"></textarea>
+    <span class="tip">💡 ⋮ menu se sample load karo · ya apna SVG paste karo</span>
+
+    <div class="prev-row">
+      <div><div class="prev-lbl">Icon (48px)</div>
+        <div class="fav-prev" id="svgBig"><span style="color:var(--muted);font-size:9px">?</span></div>
+      </div>
+      <div style="flex:1"><div class="prev-lbl">Browser Tab Look</div>
+        <div class="tab-mock">
+          <div id="svgTab" style="width:16px;height:16px;flex-shrink:0;display:flex;align-items:center;justify-content:center;"><div style="width:12px;height:12px;background:var(--border);border-radius:2px;"></div></div>
+          <span>Your Website</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- STEP 3: CODE PREVIEW -->
+  <div class="card">
+    <div class="top-bar">
+      <div class="card-label"><div class="bar"></div>Step 3 — Generated Code Preview</div>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto;" onclick="rfPrev('svg')">↻ Refresh</button>
+    </div>
+    <div class="code-wrap">
+      <div class="code-toolbar">
+        <div class="code-toolbar-left"><div class="cdots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div>output.html</div>
+        <button class="btn btn-secondary btn-sm" onclick="cpCode('c1')">📋 Copy</button>
+      </div>
+      <div class="code-body" id="c1"><span class="code-ph">HTML file upload karo aur SVG paste karo — generated code yahan dikhega...</span></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="addFav('svg')">⚡ Add Favicon &amp; Download</button>
+    <button class="btn btn-secondary" onclick="rfPrev('svg')">👁️ Preview Code</button>
+  </div>
+  <div class="suc-box" id="s1"><span style="font-size:20px">✅</span><div><b>SVG Favicon Added!</b><br><span style="font-size:11px;opacity:0.8">File download ho gayi.</span></div></div>
+  <div class="err-box" id="e1"></div>
+</div>
+
+<!-- ============ TAB 2: IMAGE ============ -->
+<div class="panel" id="panel-image">
+
+  <!-- STEP 1: HTML -->
+  <div class="card">
+    <div class="top-bar"><div class="card-label"><div class="bar"></div>Step 1 — Upload HTML File</div></div>
+    <div class="upload-zone" id="dz2" ondragover="dg(event,'dz2')" ondragleave="dl('dz2')" ondrop="dropH(event,'dz2',2)">
+      <input type="file" id="h2" accept=".html,.htm" onchange="loadH(this,2)">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title">Drop HTML File Here</div>
+      <div class="upload-sub">ya click karke select karo · .html / .htm</div>
+      <div id="fn2"></div>
+    </div>
+  </div>
+
+  <!-- STEP 2: IMAGE -->
+  <div class="card">
+    <div class="top-bar">
+      <div class="card-label"><div class="bar"></div>Step 2 — Upload Favicon Image</div>
+      <div class="more-btn">
+        <div class="dot-btn" onclick="tdd('dd2')"><span></span><span></span><span></span></div>
+        <div class="dropdown" id="dd2">
+          <div class="dd-item" onclick="clrImg()"><span class="di">🗑️</span>Clear Image</div>
+          <div class="dd-sep"></div>
+          <div class="dd-item" onclick="window.open('https://favicon.io','_blank')"><span class="di">🌐</span>favicon.io</div>
+          <div class="dd-item" onclick="window.open('https://realfavicongenerator.net','_blank')"><span class="di">🔧</span>Favicon Generator</div>
+        </div>
+      </div>
+    </div>
+    <div class="upload-zone" id="imgDZ" ondragover="dg(event,'imgDZ')" ondragleave="dl('imgDZ')" ondrop="dropI(event)">
+      <input type="file" id="imgF" accept="image/*" onchange="loadI(this)">
+      <div class="upload-icon">🖼️</div>
+      <div class="upload-title">Drop Image Here</div>
+      <div class="upload-sub">.png · .ico · .jpg · .svg · .webp — 32×32 ya 64×64 best</div>
+      <div id="imgFN"></div>
+    </div>
+    <div id="imgPW" class="img-prev-wrap" style="display:none;">
+      <div class="img-prev-card"><img id="ip48" src="" style="width:48px;height:48px;object-fit:contain;border-radius:4px;"><div class="img-sz-lbl">48×48</div></div>
+      <div class="img-prev-card"><img id="ip32" src="" style="width:32px;height:32px;object-fit:contain;"><div class="img-sz-lbl">32×32</div></div>
+      <div class="img-prev-card"><img id="ip16" src="" style="width:16px;height:16px;object-fit:contain;"><div class="img-sz-lbl">16×16</div></div>
+      <div class="img-prev-card"><div class="tab-mock" style="min-width:150px;"><img id="ipTab" src="" style="width:14px;height:14px;border-radius:2px;"><span style="font-size:11px;">Your Site</span></div><div class="img-sz-lbl">Tab View</div></div>
+    </div>
+    <div style="margin-top:13px;">
+      <div class="sec-div">Options</div>
+      <label class="chk-row"><input type="checkbox" id="emb" checked="">Base64 embed karo (no file dependency)</label>
+      <label class="chk-row"><input type="checkbox" id="apl" checked="">Apple Touch Icon bhi add karo</label>
+    </div>
+  </div>
+
+  <!-- STEP 3: CODE PREVIEW -->
+  <div class="card">
+    <div class="top-bar">
+      <div class="card-label"><div class="bar"></div>Step 3 — Generated Code Preview</div>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto;" onclick="rfPrev('image')">↻ Refresh</button>
+    </div>
+    <div class="code-wrap">
+      <div class="code-toolbar">
+        <div class="code-toolbar-left"><div class="cdots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div>output.html</div>
+        <button class="btn btn-secondary btn-sm" onclick="cpCode('c2')">📋 Copy</button>
+      </div>
+      <div class="code-body" id="c2"><span class="code-ph">HTML file aur image upload karo — generated code yahan dikhega...</span></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-primary" onclick="addFav('image')">⚡ Add Favicon &amp; Download</button>
+    <button class="btn btn-secondary" onclick="rfPrev('image')">👁️ Preview Code</button>
+  </div>
+  <div class="suc-box" id="s2"><span style="font-size:20px">✅</span><div><b>Image Favicon Added!</b><br><span style="font-size:11px;opacity:0.8">File download ho gayi with embedded favicon.</span></div></div>
+  <div class="err-box" id="e2"></div>
+</div>
+
+<!-- ============ TAB 3: REMOVE ============ -->
+<div class="panel" id="panel-remove">
+
+  <div class="card">
+    <div class="top-bar"><div class="card-label"><div class="bar"></div>Upload HTML File</div></div>
+    <div class="upload-zone" id="dz3" ondragover="dg(event,'dz3')" ondragleave="dl('dz3')" ondrop="dropH(event,'dz3',3)">
+      <input type="file" id="h3" accept=".html,.htm" onchange="loadH(this,3)">
+      <div class="upload-icon">📄</div>
+      <div class="upload-title">Drop HTML File Here</div>
+      <div class="upload-sub">Jis file se favicon remove karna hai</div>
+      <div id="fn3"></div>
+    </div>
+  </div>
+
+  <div class="card" id="detCard" style="display:none;">
+    <div class="card-label"><div class="bar"></div>Detected Favicons</div>
+    <div id="detList" style="margin-top:12px;"></div>
+  </div>
+
+  <div class="card">
+    <div class="top-bar">
+      <div class="card-label"><div class="bar"></div>Preview — After Removal</div>
+      <button class="btn btn-secondary btn-sm" style="margin-left:auto;" onclick="prvRem()">↻ Refresh</button>
+    </div>
+    <div class="code-wrap">
+      <div class="code-toolbar">
+        <div class="code-toolbar-left"><div class="cdots"><span class="dr"></span><span class="dy"></span><span class="dg"></span></div>cleaned.html</div>
+        <button class="btn btn-secondary btn-sm" onclick="cpCode('c3')">📋 Copy</button>
+      </div>
+      <div class="code-body" id="c3"><span class="code-ph">HTML file upload karo — favicon-free preview yahan dikhega...</span></div>
+    </div>
+  </div>
+
+  <div class="btn-row">
+    <button class="btn btn-danger" onclick="remFav()">🗑️ Remove Favicon &amp; Download</button>
+    <button class="btn btn-secondary" onclick="prvRem()">👁️ Preview</button>
+  </div>
+  <div class="suc-box" id="s3"><span style="font-size:20px">✅</span><div><b>Favicon Removed!</b><br><span style="font-size:11px;opacity:0.8">Clean HTML file download ho gayi.</span></div></div>
+  <div class="err-box" id="e3"></div>
+</div>
+
+</div><!-- /wrap -->
+
+
+
+
+<script src="script.js" defer=""></script></body></html>
